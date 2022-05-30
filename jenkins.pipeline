@@ -1,0 +1,38 @@
+def GIT_REPO = 'git@ssh.dev.azure.com:v3/indikaenergygroup/EMI/emi-qa-web'
+def ECR_REPO = 'qa-test'
+
+node("worker-qa") {
+    try {
+        stage('Init'){
+            def dockerHome = tool 'docker'
+            env.PATH = "${dockerHome}/bin:${env.PATH}"
+        }
+        stage('Clone'){
+            checkout([$class: 'GitSCM', branches: [[name: '*/develop']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 2, noTags: true, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'emi-git', url: GIT_REPO]]])
+        }
+        script{
+            stage('Do build'){
+
+                sh 'docker build -f Dockerfile --build-arg ENV_BROWSER=${ENV_BROWSER} --build-arg TESTRAIL_RUNID=${TESTRAIL_RUNID} -t ' + ECR_REPO + ' .'
+
+            }
+        }
+
+    } catch (err) {
+        echo 'Error: ' + err.toString()
+        cleanWs()
+    }
+
+    stage('Cleaning up workspace') {
+        cleanWs()
+    }
+
+    stage('Cleaning docker images'){
+        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE'){
+            sh '''
+                docker rmi -f $(sudo docker images | grep ''' + ECR_REPO + ''' | awk '{print $3}')
+                docker rmi -f $(sudo docker images --filter="dangling=true" -q --no-trunc)
+            '''
+        }
+    }
+}
