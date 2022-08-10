@@ -17,7 +17,7 @@ const runid = process.env.TESTRAIL_RUNID;
 const version = "Test"
 const options = {
   username: "novianto.nugroho@xapiens.id",
-  password: "Xapiens$$$123",
+  password: "",
   url: "https://xti.testrail.io/"
 };
 const testrail = new CucumberRailClient(options);

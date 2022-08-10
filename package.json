@@ -1,7 +1,7 @@
 {
   "name": "xswift-qa-web",
   "version": "1.0.0",
-  "description": "XSWIFT Web Automation Test",
+  "description": "Web Automation Test",
   "main": "cucumber.conf.js",
   "scripts": {
     "test": "wdio run ./wdio.conf.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://indikaenergygroup.visualstudio.com/X-Swift/_git/xswift-qa-web"
+    "url": ""
   },
   "author": "Novianto Nugroho",
   "license": "ISC",
