@@ -1,7 +1,7 @@
 {
-  "name": "emi-qa-web",
+  "name": "xswift-qa-web",
   "version": "1.0.0",
-  "description": "EMI Web Automation Test",
+  "description": "XSWIFT Web Automation Test",
   "main": "cucumber.conf.js",
   "scripts": {
     "test": "wdio run ./wdio.conf.js",
@@ -10,19 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://indikaenergygroup.visualstudio.com/EMI/_git/emi-qa-web"
+    "url": "https://indikaenergygroup.visualstudio.com/X-Swift/_git/xswift-qa-web"
   },
   "author": "Novianto Nugroho",
   "license": "ISC",
   "dependencies": {
-    "@wdio/cli": "^7.16.14",
     "archiver": "^5.3.0"
   },
   "devDependencies": {
-    "@wdio/cucumber-framework": "^7.16.14",
-    "@wdio/local-runner": "^7.16.14",
-    "@wdio/spec-reporter": "^7.16.14",
-    "chromedriver": "^98.0.1",
+    "chromedriver": "^104.0.0",
     "cucumber": "^6.0.5",
     "cucumber-html-reporter": "^5.4.0",
     "cucumber-pretty": "^6.0.0",
@@ -32,7 +28,6 @@
     "nightwatch-api": "^3.0.2",
     "nightwatch-xhr": "^0.4.7",
     "selenium-server": "^3.141.59",
-    "wdio-chromedriver-service": "^7.2.6",
     "testrail-integration": "^0.2.4"
   }
 }

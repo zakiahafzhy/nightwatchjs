@@ -1,3 +1,0 @@
-ENV_BROWSER=edge 
-# chrome / firefox / edge
-TESTRAIL_RUNID=6

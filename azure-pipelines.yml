@@ -1,0 +1,53 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- develop
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '14.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+    chromedriver -v
+    npm run e2e-test:bdd
+  displayName: 'E2E Test'
+  condition: succeededOrFailed()
+- script: |
+    curl -vX POST https://qa-matrix-v2.xapiens.id/api/v1/report/web/store --form 'Data=@"/$(Build.SourcesDirectory)/e2e-tests/report/cucumber_report.json"' --form 'ReportName="Xswift Web"' --form 'ProjectId="adf1865c-e505-44d0-a4db-722eb2b6f1d0"' --form 'ProjectName="Xswift"' --form 'AppVersion="0.0.1"' --form 'Environment="UAT"'
+  condition: succeededOrFailed()
+  displayName: 'Push to QA Matrix'
+- task: PublishCucumberReport@1
+  inputs:
+    jsonDir: './e2e-tests/report'
+    outputPath: './e2e-tests/report'
+    theme: 'bootstrap'
+    reportSuiteAsScenarios: true
+  condition: succeededOrFailed()
+# - task: PublishBuildArtifacts@1
+#   inputs:
+#     PathtoPublish: 'e2e-tests/report/cucumber_report.html'
+#     ArtifactName: 'HtmlReport'
+#     publishLocation: 'Container'
+#   condition: succeededOrFailed()
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'e2e-tests/report/cucumber_report.json'
+    ArtifactName: 'JsonReport'
+    publishLocation: 'Container'
+  condition: succeededOrFailed()
+- script: |
+    kill -9 $(ps ax | grep npm | awk '{print $1}')
+    rm package-lock.json
+    rm -rf node_modules
+    ls -lah
+  condition: succeededOrFailed()
+  displayName: 'remove node modules & kill process'

@@ -1,150 +1,150 @@
-const { client } = require('nightwatch-api');
-const { Given, Then, When } = require('cucumber');
-const fs = require('fs');
+const { client } = require('nightwatch-api')
+const { Given, Then, When } = require('cucumber')
 
-Given(/^I visit EMI page$/, () => {
-    return client
-    .useXpath()
-    .maximizeWindow()
-    .url('https://emifront:TinCn54KkL@frontend-dev.electramobilitas.id/')
-    .pause(5000)
-    .waitForElementPresent(`//*[@id="hero"]/div[1]`)
-    .assert.containsText(`//*[@id="hero"]/div[1]`,`BE A PART OF FUTURE MOBILITY`);
-});
-Given(/^I am on EMI page with logged in account$/, () => {
-    return client
-    .useXpath()
-    .url('https://frontend-dev.electramobilitas.id/')
-    .pause(5000)
-    .waitForElementPresent(`//*[@id="hero"]/div[1]`)
-    .assert.containsText(`//*[@id="hero"]/div[1]`,`BE A PART OF FUTURE MOBILITY`)
-    .waitForElementPresent(`//*[@id="account-navbar-btn"]/span/div[1]`);
-});
+Given(/^I visit Xswift page$/, () => {
+  return client.url(process.env.URL)
+  .maximizeWindow()
+  .pause(1000)
+})
 
-When(/^I click Account header$/, () => {
-    return client
-    .useXpath()
-    .waitForElementPresent(`//*[@id="account-navbar-btn"]`)
-    .click(`//*[@id="account-navbar-btn"]`)
-    .pause(5000);
-});
-Given(/^I am on login page$/, () => {
-    return client
-    .useXpath()
-    .waitForElementPresent(`//*[@id="__next"]/div/div[2]/div/div[1]/div`)
-    .assert.containsText(`//*[@id="__next"]/div/div[2]/div/div[1]/div`,`Login to your Account`);
-});
-Then(/^I should see multiple login methods$/, () => {
-    return client
-    .useXpath()
-    .waitForElementPresent(`//*[@id="phoneNumber"]`)
-    .waitForElementPresent(`//*[@id="__next"]/div/div[2]/div/div[1]/form/div[1]/div[1]/button/span/div`)
-    .waitForElementPresent(`//*[@id="__next"]/div/div[2]/div/div[1]/form/div[2]/button[2]`);
+When(/^I write email '(.*?)'$/, (email) => {
+  return client
+  .useXpath()
+  .waitForElementPresent('//*[@id="email"]')
+  .pause(2000)
+  .setValue('//*[@id="email"]', email)
+})
+
+When(/^I write password '(.*?)'$/, (pass) => {
+  return client
+  .useXpath()
+  .waitForElementPresent('//*[@id="password"]')
+  .pause(2000)
+  .setValue('//*[@id="password"]', pass)
+})
+
+When(/^I Click Button Login$/, () => {
+  return client
+  .useXpath()
+  .waitForElementPresent('//*[@id="root"]/div/div/div/div[2]/div/div/form/button')
+  .click('//*[@id="root"]/div/div/div/div[2]/div/div/form/button')
+  .pause(2000)
 });
 
-
-Given(/^I am on sign in with phone number page$/, () => {
-    return client
-    .useXpath()
-    .waitForElementPresent(`//*[@id="phoneNumber"]`);
-});
-When(/^I provide phone number '(.*?)' to login$/, (phone) => {
-    if (phone == null) {
-        phone = '';
-    }
-    return client
-    .useXpath()
-    .waitForElementPresent(`//*[@id="phoneNumber"]`)
-    .getValue('xpath',`//*[@id="phoneNumber"]`,function(srcode){
-        srcode = srcode.value;
-        for (var i = 0; i < srcode.length; i++) {
-            client.setValue(`//*[@id="phoneNumber"]`,'').keys('\ue003')
-        }
-    })
-    .setValue(`//*[@id="phoneNumber"]`,phone)
-    .waitForElementPresent(`//*[@id="submit-register"]`)
-    .click(`//*[@id="submit-register"]`)
-    .pause(1000);
-});
-Then(/^I should see sign in with phone number error '(.*?)' below phone number field$/, (phone) => {
-    if (phone !== null) {
-        client.waitForElementPresent(`//*[@id="phoneNumber-helper-text"]`)
-        .assert.containsText(`//*[@id="phoneNumber-helper-text"]`,phone)
-    }
-    return client;
+When(/^I Click Log Out$/, () => {
+  return client
+  .useXpath()
+  .waitForElementPresent('//*[@id="root"]/nav/div/div/img')
+  .click('//*[@id="root"]/nav/div/div/img')
+  .pause(2000)
 });
 
-When(/^I choose to sign in with email$/, () => {
-    return client
-    .useXpath()
-    .waitForElementPresent(`//*[@id="__next"]/div/div[2]/div/div[1]/form/div[1]/div[1]/button/span/div`)
-    .click(`//*[@id="__next"]/div/div[2]/div/div[1]/form/div[1]/div[1]/button/span/div`)
-    .pause(1000);
-});
-Given(/^I am on sign in with email page$/, () => {
-    return client
-    .useXpath()
-    .waitForElementPresent(`//*[@id="email"]`)
-    .waitForElementPresent(`//*[@id="password"]`);
-});
-When(/^I provide email '(.*?)' and password '(.*?)' to login$/, (email,pass) => {
-    if (email == null) {
-        email = '';
-    }
-    if (pass == null) {
-        pass = '';
-    }
-    return client
-    .useXpath()
-    .waitForElementPresent(`//*[@id="email"]`)
-    .getValue('xpath',`//*[@id="email"]`,function(srcode){
-        srcode = srcode.value;
-        for (var i = 0; i < srcode.length; i++) {
-            client.setValue(`//*[@id="email"]`,'').keys('\ue003')
-        }
-    })
-    .setValue(`//*[@id="email"]`,email)
-    .waitForElementPresent(`//*[@id="password"]`)
-    .getValue('xpath',`//*[@id="password"]`,function(srcode){
-        srcode = srcode.value;
-        for (var i = 0; i < srcode.length; i++) {
-            client.setValue(`//*[@id="password"]`,'').keys('\ue003')
-        }
-    })
-    .setValue(`//*[@id="password"]`,pass)
-    .waitForElementPresent(`//button[1]/span/div/div[2][.='Login']`)
-    .click(`//button[1]/span/div/div[2][.='Login']`)
-    .pause(5000);
-});
-Then(/^I should see sign in with email error '(.*?)' below email field and '(.*?)' below password field$/, (email,pass) => {
-    if (email !== null) {
-        client.waitForElementPresent(`//*[@id="email-helper-text"]`)
-        .assert.containsText(`//*[@id="email-helper-text"]`,email)
-    }
-    if (pass !== null) {
-        client.waitForElementPresent(`//*[@id="password-helper-text"]`)
-        .assert.containsText(`//*[@id="password-helper-text"]`,pass)
-    }
-    return client;
-});
-Then(/^I should see notification popup '(.*?)'$/, (popup) => {
-    return client
-    .useXpath()
-    .waitForElementPresent(`//*[@id="notistack-snackbar"]`)
-    .assert.containsText(`//*[@id="notistack-snackbar"]`,popup);
+Then(/^I success sign in$/, () => {
+  return client
+  .useXpath()
+  .waitForElementPresent(`//*[@id="responsive-navbar-nav"]/div/div/div[2]`)
+  .assert.elementPresent('//*[@id="responsive-navbar-nav"]/div/div/div[2]');
 });
 
-When(/^I switch to main window$/, () => {
-    return client
-    .windowHandles(function(result) {
-        client.switchWindow(result.value[0])
-        .pause(1000)
-    });
+Then(/^Show Alert Email and Password Empty not Found$/, () => {
+  return client
+  .useXpath()
+  .waitForElementPresent(`//*[@id="root"]/div/div/div/div[2]/div/div/form/div[1]/p`)
+  .assert.elementPresent('//*[@id="root"]/div/div/div/div[2]/div/div/form/div[1]/p');
 });
-When(/^I switch to window (.*?)$/, (window) => {
-    return client
-    .windowHandles(function(result) {
-        client.switchWindow(result.value[+window])
-        .pause(1000)
-    });
+
+Given(/^Redirect Page Login Xswift$/, () => {
+  return client
+  .useXpath()
+  .waitForElementPresent(`//*[@id="root"]/div/div/div/div[2]/div/div/h4`)
+  .assert.elementPresent('//*[@id="root"]/div/div/div/div[2]/div/div/h4');
+});
+
+When(/^I provide email '(.*?)' and password '(.*?)'$/, (email,pass) => {
+  if (email == null) {
+    email = '';
+}
+if (pass == null) {
+    pass = '';
+}
+return client
+.useXpath()
+.waitForElementPresent(`//*[@id="email"]`)
+.getValue('xpath',`//*[@id="email"]`,function(srcode){
+    srcode = srcode.value;
+    for (var i = 0; i < srcode.length; i++) {
+        client.setValue(`//*[@id="email"]`,'').keys('\ue003')
+    }
+})
+.setValue(`//*[@id="email"]`,email)
+.waitForElementPresent(`//*[@id="password"]`)
+.getValue('xpath',`//*[@id="password"]`,function(srcode){
+    srcode = srcode.value;
+    for (var i = 0; i < srcode.length; i++) {
+        client.setValue(`//*[@id="password"]`,'').keys('\ue003')
+    }
+})
+.setValue(`//*[@id="password"]`,pass)
+.waitForElementPresent(`//button[.='LOGIN']`)
+.click(`//button[.='LOGIN']`);
+});
+
+When(/^I Click Pop Up Info New Feature After Login$/, () => {
+  return client
+  .useXpath()
+  .waitForElementPresent('/html/body/div[3]/div/div/div[1]/button/span[1]')
+  .click('/html/body/div[3]/div/div/div[1]/button/span[1]')
+  .pause(5000)
+});
+
+Then(/^Show Alert Password Empty not Found$/, () => {
+  return client
+  .useXpath()
+  .waitForElementPresent(`//*[@id="root"]/div/div/div/div[2]/div/div/form/div[3]/p`)
+  .assert.elementPresent('//*[@id="root"]/div/div/div/div[2]/div/div/form/div[3]/p');
+});
+
+Then(/^Show Alert email format does not match$/, () => {
+  return client
+  .useXpath()
+  .waitForElementPresent(`//*[@id="root"]/div/div/div/div[2]/div/div/form/div[1]/p`)
+  .assert.elementPresent('//*[@id="root"]/div/div/div/div[2]/div/div/form/div[1]/p');
+});
+
+Then(/^Show Pop Up Invalid Username and Password$/, () => {
+  return client
+  .useXpath()
+  .waitForElementPresent(`//button[@class='swal-button swal-button--confirm']`)
+  .click(`//button[@class='swal-button swal-button--confirm']`)
+  .pause(2000)
+});
+
+Given(/^Redirect Homepage After Login$/, () => {
+  return client
+  .useXpath()
+  .waitForElementPresent(`//*[@id="responsive-navbar-nav"]/div/div/div[2]`)
+  .assert.elementPresent('//*[@id="responsive-navbar-nav"]/div/div/div[2]');
+});
+
+When(/^I Click Icon Profile$/, () => {
+  return client
+  .useXpath()
+  .waitForElementPresent('//*[@id="responsive-navbar-nav"]/div/div/div[2]')
+  .click('//*[@id="responsive-navbar-nav"]/div/div/div[2]')
+  .pause(2000)
+});
+
+When(/^I Click Logout Akun$/, () => {
+  return client
+  .useXpath()
+  .waitForElementPresent('//*[@id="responsive-navbar-nav"]/div/div/div[2]/div/a[3]')
+  .click('//*[@id="responsive-navbar-nav"]/div/div/div[2]/div/a[3]')
+  .pause(2000)
+});
+
+Then(/^I Success Logout Akun$/, () => {
+  return client
+  .useXpath()
+  .waitForElementPresent(`//*[@id="root"]/div/div/div/div[2]/div/div`)
+  .assert.elementPresent('//*[@id="root"]/div/div/div/div[2]/div/div');
 });
